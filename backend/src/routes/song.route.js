@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-const songRoute = Router();
+const router = Router();
 
-songRoute.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.send('Song route with GET method');
 });
 
-export default songRoute;
+export default router;

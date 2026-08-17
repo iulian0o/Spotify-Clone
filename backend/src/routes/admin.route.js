@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-const adminRoute = Router();
+const router = Router();
 
-adminRoute.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.send('Admin route with GET method')
 });
 
-export default adminRoute;
+export default router;

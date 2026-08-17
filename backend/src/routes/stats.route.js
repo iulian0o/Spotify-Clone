@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-const statsRoute = Router();
+const router = Router();
 
-statsRoute.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.send('Stats route with GET method');
 });
 
-export default statsRoute;
+export default router;
