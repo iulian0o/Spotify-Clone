@@ -24,7 +24,7 @@ export default function AlbumPage() {
 
   return (
     <div className="h-full">
-      <ScrollArea className="h-full">
+      <ScrollArea className="h-full rounded-md">
         {/* Main Content */}
         <div className="relative min-h-full">
           {/* bg gradient */}
