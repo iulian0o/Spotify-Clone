@@ -24,7 +24,7 @@ export default function HomePage() {
   }, [fetchFeaturedSongs, fetchMadeForYouSongs, fetchTrendingSongs])
 
   return (
-    <main className="rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900">
+    <main className="rounded-md overflow-hidden h-full bg-linear-to-b from-zinc-800 to-zinc-900">
       <TopBar />
       <ScrollArea className="h-[calc(100vh-180px)]">
         <div className="p-4 sm:p-6">
