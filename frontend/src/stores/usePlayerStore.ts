@@ -55,7 +55,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   },
 
   togglePlay: () => {
-    const willStartPlaying = get().isPlaying;
+    const willStartPlaying = !get().isPlaying;
 
     set({
       isPlaying: willStartPlaying,
