@@ -1,9 +1,17 @@
 import { Router } from 'express';
+import { createSong, deleteSong, createAlbum, deleteAlbum, checkAdmin } from '../controllers/admin.controller.js'
+import { protectRoute, requireAdmin } from '../middleware/auth.middleware.js';
 
-const adminRoute = Router();
+const router = Router();
 
-adminRoute.get('/', (req, res) => {
-  res.send('Admin route with GET method')
-});
+router.use(protectRoute, requireAdmin);
 
-export default adminRoute;
+router.get("/check", checkAdmin);
+
+router.post('/songs', createSong);
+router.delete('/songs/:id', deleteSong);
+
+router.post('/songs', createAlbum);
+router.delete('/songs/:id', deleteAlbum);
+
+export default router;
