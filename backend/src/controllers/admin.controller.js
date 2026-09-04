@@ -1,3 +1,5 @@
+import { clerkClient } from '@clerk/express';
+
 import { Song } from "../models/song.model.js";
 import { Album } from "../models/album.model.js";
 import cloudinary from "../lib/cloudinary.js";
@@ -21,7 +23,7 @@ export const createSong = async (req, res) => {
       return res.status(400).json({ message: "Please upload all files" });
     }
 
-    const { title, artist, almbumId, duration } = req.body;
+    const { title, artist, albumId, duration } = req.body;
     const audioFile = req.files.audioFile;
     const imageFile = req.files.imageFile;
 
@@ -111,6 +113,16 @@ export const deleteAlbum = async (req, res, next) => {
   }
 }
 
+
 export const checkAdmin = async (req, res, next) => {
-  res.status(200).json({ admin: true });
-}
+  try {
+    const { userId } = req.auth();
+    if (!userId) return res.status(401).json({ message: "Unauthorized - you must be logged in" });
+
+    const currentUser = await clerkClient.users.getUser(userId);
+    const isAdmin = process.env.ADMIN_EMAIL === currentUser.primaryEmailAddress?.emailAddress;
+    res.status(200).json({ admin: isAdmin });
+  } catch (error) {
+    next(error);
+  }
+};
