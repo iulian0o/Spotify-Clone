@@ -56,7 +56,7 @@ export const createSong = async (req, res) => {
 
 export const deleteSong = async (req, res, next) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
     const song = await Song.findById(id);
 
     // if song belongs to an album, update the album songs array
