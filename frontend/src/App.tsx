@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router'
+import { Toaster } from "react-hot-toast"
 import { AuthenticateWithRedirectCallback } from '@clerk/react'
 import HomePage from './pages/home/HomePage'
 import AuthCallbackPage from './pages/auth-callback/AuthCallbackPage'
@@ -22,6 +23,7 @@ function App() {
           <Route path='/albums/:albumId' element={<AlbumPage />} />
         </Route>
       </Routes>
+      <Toaster />
     </>
   );
 }
