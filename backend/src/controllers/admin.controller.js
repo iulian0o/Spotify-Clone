@@ -17,9 +17,9 @@ const uploadToCloudinary = async (file) => {
   }
 };
 
-export const createSong = async (req, res) => {
+export const createSong = async (req, res, next) => {
   try {
-    if (!req.files || req.files.audioFile || req.files.imageFile) {
+    if (!req.files || !req.files.audioFile || !req.files.imageFile) {
       return res.status(400).json({ message: "Please upload all files" });
     }
 
@@ -43,7 +43,7 @@ export const createSong = async (req, res) => {
 
     // if song belongs to and album, update the album's songs array
     if (albumId) {
-      await Album.findByIdAndUpdate(album, {
+      await Album.findByIdAndUpdate(albumId, {
         $push: { songs: song._id },
       });
     }

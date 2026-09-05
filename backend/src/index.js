@@ -6,6 +6,7 @@ import cors from 'cors';
 
 import { connectDB } from './lib/db.js';
 import { clerkMiddleware } from '@clerk/express';
+import { fileURLToPath } from "url";
 
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
@@ -16,7 +17,8 @@ import statsRoutes from './routes/stats.route.js';
 
 dotenv.config();
 
-const __dirname = path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT;
 
@@ -29,14 +31,16 @@ app.use(cors(
 
 app.use(express.json());
 app.use(clerkMiddleware());
-app.use(fileUpload({
-  userTempFiles: true,
-  tempFileDir: path.join(__dirname, "tmp"),
-  createParentPath: true,
-  limits: {
-    fileSize: 10 * 1024 * 1024 // 10mb max file size
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: path.join(__dirname, "tmp"),
+    createParentPath: true,
+    limits: {
+      fileSize: 10 * 1024 * 1024 // 10mb max file size
   }
-}));
+  })
+);
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
