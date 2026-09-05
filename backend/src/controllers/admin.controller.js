@@ -1,3 +1,5 @@
+import { clerkClient } from '@clerk/express';
+
 import { Song } from "../models/song.model.js";
 import { Album } from "../models/album.model.js";
 import cloudinary from "../lib/cloudinary.js";
@@ -15,13 +17,13 @@ const uploadToCloudinary = async (file) => {
   }
 };
 
-export const createSong = async (req, res) => {
+export const createSong = async (req, res, next) => {
   try {
-    if (!req.files || req.files.audioFile || req.files.imageFile) {
+    if (!req.files || !req.files.audioFile || !req.files.imageFile) {
       return res.status(400).json({ message: "Please upload all files" });
     }
 
-    const { title, artist, almbumId, duration } = req.body;
+    const { title, artist, albumId, duration } = req.body;
     const audioFile = req.files.audioFile;
     const imageFile = req.files.imageFile;
 
@@ -41,7 +43,7 @@ export const createSong = async (req, res) => {
 
     // if song belongs to and album, update the album's songs array
     if (albumId) {
-      await Album.findByIdAndUpdate(album, {
+      await Album.findByIdAndUpdate(albumId, {
         $push: { songs: song._id },
       });
     }
@@ -54,7 +56,7 @@ export const createSong = async (req, res) => {
 
 export const deleteSong = async (req, res, next) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
     const song = await Song.findById(id);
 
     // if song belongs to an album, update the album songs array
@@ -99,7 +101,7 @@ export const createAlbum = async (req, res, next) => {
 
 export const deleteAlbum = async (req, res, next) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     await Song.deleteMany({ album: id });
     await Album.findByIdAndDelete(id);
@@ -111,6 +113,16 @@ export const deleteAlbum = async (req, res, next) => {
   }
 }
 
+
 export const checkAdmin = async (req, res, next) => {
-  res.status(200).json({ admin: true });
-}
+  try {
+    const { userId } = req.auth();
+    if (!userId) return res.status(401).json({ message: "Unauthorized - you must be logged in" });
+
+    const currentUser = await clerkClient.users.getUser(userId);
+    const isAdmin = process.env.ADMIN_EMAIL === currentUser.primaryEmailAddress?.emailAddress;
+    res.status(200).json({ admin: isAdmin });
+  } catch (error) {
+    next(error);
+  }
+};
