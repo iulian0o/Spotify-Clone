@@ -52,10 +52,9 @@ export const useMusicStore = create<MusicStore>((set) => ({
           song.albumId === state.albums.find((a) => a._id === id)?.title ? {...song, album: null} : song
         )),
       }));
-      toast.success("song deleted successfully")
+      toast.success("Song deleted successfully")
     } catch (error: any) {
-      console.log("Error in deleteingSong", error)
-      toast.error("Error deleting song")
+      toast.error("Error deleting song" + error.message)
     } finally {
       set({ isLoading: false })
     }
@@ -69,10 +68,9 @@ export const useMusicStore = create<MusicStore>((set) => ({
       set(state => ({
         songs: state.songs.filter(song => song._id !== id)
       }))
-      toast.success("song deleted successfully")
+      toast.success("Album deleted successfully")
     } catch (error: any) {
-      console.log("Error in deleteingSong", error)
-      toast.error("Error deleting song")
+      toast.error("Error deleting song" + error.message)
     } finally {
       set({ isLoading: false })
     }
