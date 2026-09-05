@@ -45,7 +45,8 @@ A full-stack Spotify clone built with **React + Typescript** on the frontend and
   - Zustand stores for the music library and the player (`useMusicStore`, `usePlayerStore`)
   - Song playback and queue handling
   - Reusable Play Button component
-  - Playback Controls component (play/pause, track navigation, etc.)
+  - Playback Controls component (play/pause, track navigation, etc.) 
+- Admin Dashboard UI 
 
 ### Started, not finished
 - Chat page and `useChatStore` exist as an early scaffold but aren't built out yet
@@ -54,7 +55,6 @@ A full-stack Spotify clone built with **React + Typescript** on the frontend and
 - Chat / messaging UI
 - Search
 - Playlist / library page
-- Admin dashboard UI
 - User profile page
 
 ---
