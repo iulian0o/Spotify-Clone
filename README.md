@@ -46,7 +46,8 @@ A full-stack Spotify clone built with **React + Typescript** on the frontend and
   - Song playback and queue handling
   - Reusable Play Button component
   - Playback Controls component (play/pause, track navigation, etc.) 
-- Admin Dashboard UI 
+- Admin Dashboard UI:
+  - No need to refresh the page while creating a new album or song (fix)
 
 ### Started, not finished
 - Chat page and `useChatStore` exist as an early scaffold but aren't built out yet
