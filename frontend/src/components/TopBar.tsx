@@ -8,6 +8,7 @@ import SignInOAuthButtons from "./SignInOAuthButtons";
 
 export default function TopBar() {
   const { isAdmin } = useAuthStore();
+  console.log({ isAdmin });
 
   return (
     <div
@@ -15,7 +16,7 @@ export default function TopBar() {
       backdrop-blur-md z-10"
     >
       <div className="flex gap-2 items-center">
-        <img src="/spotify.png" className="size-8" alt="spotify logo"/>
+        <img src="/spotify.png" className="size-8" alt="Spotify logo"/>
           Spotify
         </div>
       <div className="flex items-center gap-4">

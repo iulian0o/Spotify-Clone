@@ -6,8 +6,8 @@ export default function SignInOAuthButtons() {
 
   const signInWithGoogle = async () => {
     console.log("button clicked");
-  console.log("signIn object:", signIn);
-  console.log("typeof signIn.sso:", typeof signIn?.sso);
+    console.log("signIn object:", signIn);
+    console.log("typeof signIn.sso:", typeof signIn?.sso);
 
     const { error } = await signIn.sso({
       strategy: "oauth_google",
