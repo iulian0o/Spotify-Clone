@@ -37,7 +37,14 @@ export default function AlbumPage() {
 	const handlePlaySong = (index: number) => {
 		if (!currentAlbum) return;
 
-		playAlbum(currentAlbum?.songs, index);
+		const song = currentAlbum.songs[index];
+    const isThisSongCurrent = currentSong?._id === song._id;
+
+    if (isThisSongCurrent) {
+      togglePlay();
+    } else {
+      playAlbum(currentAlbum.songs, index);
+    }
 	};
 
 	return (
@@ -118,13 +125,16 @@ export default function AlbumPage() {
 											>
 												<div className='flex items-center justify-center'>
 													{isCurrentSong && isPlaying ? (
-														<div className='size-4 text-green-500'>♫</div>
-													) : (
-														<span className='group-hover:hidden'>{index + 1}</span>
-													)}
-													{!isCurrentSong && (
-														<Play className='h-4 w-4 hidden group-hover:block' />
-													)}
+                            <>
+                              <div className="size-4 text-green-500 group-hover:hidden">♫</div>
+                              <Pause className="h-4 w-4 hidden group-hover:block" />
+                            </>
+                          ) : (
+                            <>
+                              <span className="group-hover:hidden">{index + 1}</span>
+                              <Play className="h-4 w-4 hidden group-hover:block" />
+                            </>
+                          )}
 												</div>
 
 												<div className='flex items-center gap-3'>

@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { persist } from "zustand/middleware"
 import type { Song } from "../types/index.ts"
 
 interface PlayerStore {
@@ -6,6 +7,7 @@ interface PlayerStore {
   isPlaying: boolean;
   queue: Song[];
   currentIndex: number;
+  savedPositions: Record<string, number>;
 
   initializeQueue: (song: Song[]) => void;
   playAlbum: (song: Song[], startIndex?: number) => void;
@@ -13,90 +15,82 @@ interface PlayerStore {
   togglePlay: () => void;
   playNext: () => void;
   playPrevious: () => void;
+  saveSongPosition: (songId: string, time: number) => void;
+  getSongPosition: (songId: string) => number;
 
 }
 
-export const usePlayerStore = create<PlayerStore>((set, get) => ({
-  currentSong: null,
-  isPlaying: false,
-  queue: [],
-  currentIndex: -1,
+export const usePlayerStore = create<PlayerStore>()(
+  persist(
+    (set, get) => ({
+      currentSong: null,
+      isPlaying: false,
+      queue: [],
+      currentIndex: -1,
+      savedPositions: {},
 
-  initializeQueue: (songs: Song[]) => {
-    set({
-      queue: songs,
-      currentSong: get().currentSong || songs[0],
-      currentIndex: get().currentIndex == -1 ? 0 : get().currentIndex
-    })
-  },
-  playAlbum: (songs: Song[], startIndex = 0) => {
-    if (songs.length === 0) return;
+      initializeQueue: (songs: Song[]) => {
+        set({
+          queue: songs,
+          currentSong: get().currentSong || songs[0],
+          currentIndex: get().currentIndex == -1 ? 0 : get().currentIndex
+        })
+      },
+      playAlbum: (songs: Song[], startIndex = 0) => {
+        if (songs.length === 0) return;
+        const song = songs[startIndex];
+        set({ queue: songs, currentSong: song, currentIndex: startIndex, isPlaying: true })
+      },
 
-    const song = songs[startIndex];
+      setCurrentSong: (song: Song | null) => {
+        if (!song) return;
+        const songIndex = get().queue.findIndex(s => s._id === song._id);
+        set({
+          currentSong: song,
+          isPlaying: true,
+          currentIndex: songIndex !== -1 ? songIndex : get().currentIndex
+        });
+      },
 
-    set({
-      queue: songs,
-      currentSong: song,
-      currentIndex: startIndex,
-      isPlaying: true
-    })
-  },
+      togglePlay: () => {
+        set({ isPlaying: !get().isPlaying });
+      },
 
-  setCurrentSong: (song: Song | null) => {
-    if (!song) return;
+      playNext: () => {
+        const { currentIndex, queue } = get();
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < queue.length) {
+          set({ currentSong: queue[nextIndex], currentIndex: nextIndex, isPlaying: true });
+        } else {
+          set({ isPlaying: false });
+        }
+      },
 
-    const songIndex = get().queue.findIndex(s => s._id === song._id);
+      playPrevious: () => {
+        const { currentIndex, queue } = get();
+        const prevIndex = currentIndex - 1;
+        if (prevIndex >= 0) {
+          set({ currentSong: queue[prevIndex], currentIndex: prevIndex, isPlaying: true });
+        } else {
+          set({ isPlaying: false });
+        }
+      },
 
-    set({
-      currentSong: song,
-      isPlaying: true,
-      currentIndex: songIndex !== -1 ? songIndex : get().currentIndex
-    });
-  },
+      // persistence backed position tracking
+      saveSongPosition: (songId: string, time: number) => {
+        set((state) => ({
+          savedPositions: { ...state.savedPositions, [songId]: time }
+        }));
+      },
 
-  togglePlay: () => {
-    const willStartPlaying = !get().isPlaying;
-
-    set({
-      isPlaying: willStartPlaying,
-    });
-  },
-
-  playNext: () => {
-    const { currentIndex, queue } = get();
-    const nextIndex = currentIndex + 1;
-
-    // if there is a next song to play, let's play it
-
-    if (nextIndex < queue.length) {
-      const nextSong = queue[nextIndex]
-
-      set({
-        currentSong: nextSong,
-        currentIndex: nextIndex,
-        isPlaying: true,        
-      });
-    } else {
-      // no next song
-      set({ isPlaying: false });
+      getSongPosition: (songId: string) => {
+        return get().savedPositions[songId] ?? 0;
+      },
+    }),
+    {
+      // local storage for now
+      name: "playback-positions", 
+      partialize: (state) => ({ savedPositions: state.savedPositions }),
     }
-  },
-
-  playPrevious: () => {
-    const { currentIndex, queue } = get();
-    const prevIndex = currentIndex - 1;
-
-    if (prevIndex >= 0) {
-      const prevSong = queue[prevIndex];
-
-      set({
-        currentSong: prevSong,
-        currentIndex: prevIndex,
-        isPlaying: true
-      })
-    } else {
-      // no prev song
-      set({ isPlaying: false });
-    }
-  }
-}))
+  )
+)
