@@ -45,7 +45,9 @@ A full-stack Spotify clone built with **React + Typescript** on the frontend and
   - Zustand stores for the music library and the player (`useMusicStore`, `usePlayerStore`)
   - Song playback and queue handling
   - Reusable Play Button component
-  - Playback Controls component (play/pause, track navigation, etc.) 
+  - Playback Controls component (play/pause, track navigation etc.)
+  - Song stays at the time length the user left it
+  - The time refresh to 0 when the song is changed and it's played again (fix)
 - Admin Dashboard UI:
   - No need to refresh the page while creating a new album or song (fix)
 
