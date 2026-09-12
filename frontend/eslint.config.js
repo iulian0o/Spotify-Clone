@@ -23,7 +23,5 @@ export default defineConfig([
     rules: {
       "tailwindcss/suggest-canonical-classes": "off",
     },
-
-    "react/props-types": "off",
   },
 ]);
