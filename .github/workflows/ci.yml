@@ -1,6 +1,6 @@
-name: CI  
+name: CI
 
-on: 
+on:
   push:
     branches: [main]
   pull_request:
@@ -19,10 +19,16 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
-        with: 
+        with:
           node-version: 22
           cache: npm
           cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for syntax errors
+        run: node --check src/index.js
 
   frontend:
     name: Frontend
@@ -36,7 +42,16 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
-        with: 
+        with:
           node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
